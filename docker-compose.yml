@@ -15,7 +15,9 @@ services:
     volumes:
       - "workout-db:/var/lib/mysql"
       - "./WorkoutDB/schema.sql:/docker-entrypoint-initdb.d/1.sql"
-      - "./WorkoutDB/data.sql:/docker-entrypoint-initdb.d/2.sql"
+      - "./WorkoutDB/procedures.sql:/docker-entrypoint-initdb.d/2.sql"
+      - "./WorkoutDB/data.sql:/docker-entrypoint-initdb.d/3.sql"
+      - "./WorkoutDB/seed.sql:/docker-entrypoint-initdb.d/4.sql"
 
   api:
     container_name: WorkoutAPI
@@ -41,4 +43,3 @@ services:
       - db
 volumes:
   workout-db:
-    driver: local

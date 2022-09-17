@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  db:
+    container_name: WorkoutDB
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: "workout"
+      MYSQL_USER: "workout_user"
+      MYSQL_PASSWORD: "workout_password"
+      MYSQL_ROOT_PASSWORD: "mysql_root_password"
+    ports:
+      - "3306:3306"
+    volumes:
+      - "workout-db:/var/lib/mysql"
+      - "./WorkoutDB/schema.sql:/docker-entrypoint-initdb.d/1.sql"
+      - "./WorkoutDB/data.sql:/docker-entrypoint-initdb.d/2.sql"
+
+  api:
+    container_name: WorkoutAPI
+    build:
+      context: ./WorkoutAPI
+    depends_on:
+      - db
+    ports:
+      - "3000:443"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "https://+:443;http://+:80"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "workout_dev_cert_pass"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/Certificates/WorkoutAPI.pfx"
+      DB_HOST: "db"
+      DB_PORT: 3306
+      DB_NAME: "workout"
+      DB_USER: "workout_user"
+      DB_PASS: "workout_password"
+    volumes:
+      - ./WorkoutAPI/Certificates:/Certificates:ro
+    links:
+      - db
+volumes:
+  workout-db:
+    driver: local

@@ -57,5 +57,5 @@ public interface IBaseRepository<T, TId> where T : IBaseEntity<TId>
     /// Returns count of the records.
     /// </summary>
     /// <returns>Record count.</returns>
-    Task<int> CountAsync();
+    Task<uint> CountAsync();
 }

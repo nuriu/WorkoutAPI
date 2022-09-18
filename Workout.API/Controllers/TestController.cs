@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace WorkoutAPI.Controllers;
+namespace Workout.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]

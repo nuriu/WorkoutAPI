@@ -1,0 +1,45 @@
+{
+    "Controller File": {
+        "scope": "csharp",
+        "prefix": "ctrl",
+        "body": [
+            "using Microsoft.AspNetCore.Mvc;",
+            "using WorkoutAPI.Repositories;\n",
+            "namespace WorkoutAPI.Controllers;\n",
+            "[ApiController]",
+            "[Route(\"[controller]\")]",
+            "public class ${TM_FILENAME_BASE} : ControllerBase",
+            "{",
+            "\tprivate readonly ILogger<${TM_FILENAME_BASE}> _logger;",
+            "\tprivate readonly I${1:repo_name}Repository _repository;\n",
+            "\tpublic ${TM_FILENAME_BASE}(ILogger<${TM_FILENAME_BASE}> logger, I${1}Repository repository)",
+            "\t{\n\t\t_logger = logger;\n\t\t_repository = repository;\n\t}\n",
+            "\t[HttpGet]",
+            "\tpublic IActionResult Get()",
+            "\t{\n\t\treturn Ok();\n\t}\n",
+            "\t[HttpGet]",
+            "\tpublic IActionResult Get(${2:pk_type} id)",
+            "\t{\n\t\treturn Ok();\n\t}\n",
+            "\t[HttpPost]",
+            "\tpublic IActionResult Post()",
+            "\t{\n\t\treturn Ok();\n\t}\n",
+            "\t[HttpPut]",
+            "\tpublic IActionResult Put(${2} id)",
+            "\t{\n\t\treturn Ok();\n\t}\n",
+            "\t[HttpDelete]",
+            "\tpublic IActionResult Delete(${2} id)",
+            "\t{\n\t\treturn Ok();\n\t}",
+            "}\n"
+        ],
+        "description": ""
+    },
+    "Repository Interface": {
+        "scope": "csharp",
+        "prefix": "irepo",
+        "body": [
+            "namespace WorkoutAPI.Repositories;\n",
+            "public interface ${TM_FILENAME_BASE}\n{\n\t$0\n}\n",
+        ],
+        "description": ""
+    }
+}

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Workout.API.Authorization;
 
 namespace Workout.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class TestController : ControllerBase

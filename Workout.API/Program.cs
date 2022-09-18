@@ -1,3 +1,4 @@
+using Workout.API.Authorization;
 using Workout.Application.Services;
 using Workout.Core.Repositories;
 using Workout.Infrastructure.Database;
@@ -23,6 +24,9 @@ var connectionString = String.Format("Server={0};User ID={1};Password={2};Port={
 
 builder.Services.AddTransient<IWorkoutDatabase>(_ => new WorkoutMySQLDatabase(connectionString));
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddControllers();
 builder.Services.AddHealthChecks();
 builder.Services.AddEndpointsApiExplorer();
@@ -38,7 +42,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseMiddleware<BasicAuthenticationMiddleware>();
 
 app.MapHealthChecks("/healthcheck");
 app.MapControllers();

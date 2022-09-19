@@ -23,7 +23,7 @@ public class UsersController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("Authenticate")]
-    public async Task<IActionResult> Authenticate([FromBody] UserModel user)
+    public async Task<IActionResult> Authenticate([FromBody] UserLoginModel user)
     {
         var userExists = await _service.AuthenticateUser(user.Username, user.Password);
         if (userExists)
@@ -57,7 +57,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] UserModel user)
+    public async Task<IActionResult> Post([FromBody] UserLoginModel user)
     {
         var createdUser = await _service.CreateUser(user);
         if (createdUser != null)

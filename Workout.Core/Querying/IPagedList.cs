@@ -10,12 +10,12 @@ public interface IPagedList<out T>
     /// <summary>
     /// Page index.
     /// </summary>
-    int Index { get; }
+    int PageIndex { get; }
 
     /// <summary>
     /// Page size.
     /// </summary>
-    int Size { get; }
+    int PageSize { get; }
 
     /// <summary>
     /// Data.

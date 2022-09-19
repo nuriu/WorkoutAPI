@@ -11,5 +11,5 @@ public interface IUserService
     Task<bool> AuthenticateUser(string username, string password);
     Task<IPagedList<UserModel>?> GetUserList(PagingArgs pagingArgs);
     Task<UserModel?> GetUserById(int userId);
-    Task<UserModel?> CreateUser(UserModel user);
+    Task<UserModel?> CreateUser(UserLoginModel user);
 }

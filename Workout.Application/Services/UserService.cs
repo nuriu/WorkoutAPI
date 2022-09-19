@@ -1,3 +1,4 @@
+using AutoMapper;
 using Workout.Application.Models;
 using Workout.Core.Entities;
 using Workout.Core.Querying;
@@ -6,14 +7,15 @@ using Workout.Infrastructure.Querying;
 
 namespace Workout.Application.Services;
 
-// TODO: setup mapper
 public sealed class UserService : IUserService
 {
     private readonly IUserRepository _repository;
+    private readonly IMapper _mapper;
 
-    public UserService(IUserRepository repository)
+    public UserService(IUserRepository repository, IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
 
     public async Task<bool> AuthenticateUser(string username, string password)
@@ -21,12 +23,12 @@ public sealed class UserService : IUserService
         return await _repository.AuthenticateAsync(new User(username, password));
     }
 
-    public async Task<UserModel?> CreateUser(UserModel user)
+    public async Task<UserModel?> CreateUser(UserLoginModel user)
     {
-        var createdUser = await _repository.SaveAsync(new User(user.Username, user.Password));
+        var createdUser = await _repository.SaveAsync(_mapper.Map<User>(user));
         if (createdUser != null)
         {
-            return new UserModel(createdUser.Id, createdUser.Username, string.Empty, createdUser.CreatedAt, createdUser.UpdatedAt);
+            return _mapper.Map<UserModel>(createdUser);
         }
 
         return null;
@@ -37,7 +39,7 @@ public sealed class UserService : IUserService
         var user = await _repository.GetByIdAsync(userId);
         if (user != null)
         {
-            return new UserModel(user.Id, user.Username, string.Empty, user.CreatedAt, user.UpdatedAt);
+            return _mapper.Map<UserModel>(user);
         }
 
         return null;
@@ -48,7 +50,7 @@ public sealed class UserService : IUserService
         var users = await _repository.ListAllAsync(pagingArgs);
         if (users != null)
         {
-            return new PagedList<UserModel>(pagingArgs, users.Select(x => new UserModel(x.Id, x.Username, string.Empty, x.CreatedAt, x.UpdatedAt)));
+            return new PagedList<UserModel>(pagingArgs, _mapper.Map<IReadOnlyList<UserModel>>(users));
         }
 
         return null;

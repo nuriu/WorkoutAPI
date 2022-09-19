@@ -1,10 +1,23 @@
+using System.Diagnostics;
+using Serilog;
+using Serilog.Events;
 using Workout.API.Authorization;
+using Workout.API.Exceptions;
 using Workout.Application.Services;
 using Workout.Core.Repositories;
 using Workout.Infrastructure.Database;
 using Workout.Infrastructure.Repositories;
 
+Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg));
+Serilog.Debugging.SelfLog.Enable(Console.Error);
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/workout.txt", restrictedToMinimumLevel: LogEventLevel.Error, rollingInterval: RollingInterval.Day)
+    .CreateBootstrapLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
 if (Environment.GetEnvironmentVariable("DB_HOST") == null
     || Environment.GetEnvironmentVariable("DB_USER") == null
@@ -43,6 +56,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseMiddleware<BasicAuthenticationMiddleware>();
+app.UseMiddleware<WorkoutExceptionHandlerMiddleware>();
 
 app.MapHealthChecks("/healthcheck");
 app.MapControllers();

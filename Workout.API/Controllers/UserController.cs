@@ -31,6 +31,7 @@ public class UsersController : ControllerBase
             return Ok();
         }
 
+        _logger.LogWarning("Unauthorized user: {0}", user.Username);
         return Unauthorized();
     }
 
@@ -51,6 +52,7 @@ public class UsersController : ControllerBase
             return Ok(user);
         }
 
+        _logger.LogWarning("User not found with given id: {0}", id);
         return BadRequest();
     }
 
@@ -63,6 +65,7 @@ public class UsersController : ControllerBase
             return Ok(createdUser);
         }
 
+        _logger.LogError("Couldn't create user. User: {0}:{1}", user.Username, user.Password);
         return BadRequest();
     }
 }

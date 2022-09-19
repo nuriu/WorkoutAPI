@@ -26,8 +26,7 @@ public sealed class UserRepository : IUserRepository
 
     public async Task<bool> AuthenticateAsync(User user)
     {
-        var isUserExists = await _db.CallScalarStoredProcedureAsync(SPList.IS_USER_EXISTS,
-        new List<MySqlParameter> {
+        var isUserExists = await _db.CallScalarStoredProcedureAsync(SPList.IS_USER_EXISTS, new List<MySqlParameter> {
             new MySqlParameter("username", user.Username),
             new MySqlParameter("password", user.Password),
         });
@@ -67,10 +66,10 @@ public sealed class UserRepository : IUserRepository
                 while (await reader.ReadAsync())
                 {
                     user = new User(reader.GetInt32(reader.GetOrdinal("id")),
-                                        reader.GetString(reader.GetOrdinal("username")),
-                                        reader.GetString(reader.GetOrdinal("password")),
-                                        reader.GetDateTime(reader.GetOrdinal("created_at")),
-                                        reader.GetDateTime(reader.GetOrdinal("updated_at")));
+                                    reader.GetString(reader.GetOrdinal("username")),
+                                    reader.GetString(reader.GetOrdinal("password")),
+                                    reader.GetDateTime(reader.GetOrdinal("created_at")),
+                                    reader.GetDateTime(reader.GetOrdinal("updated_at")));
                     if (user != null)
                     {
                         break;

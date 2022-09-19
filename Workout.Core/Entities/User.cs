@@ -10,4 +10,13 @@ public class User : BaseEntity<int>
         Username = username;
         Password = password;
     }
+
+    public User(int id, string username, string password, DateTime createdAt, DateTime updatedAt)
+    {
+        Id = id;
+        Username = username;
+        Password = password;
+        CreatedAt = createdAt;
+        UpdatedAt = updatedAt;
+    }
 }

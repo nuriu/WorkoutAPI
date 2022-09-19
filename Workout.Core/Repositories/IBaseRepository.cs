@@ -15,21 +15,21 @@ public interface IBaseRepository<T, TId> where T : IBaseEntity<TId>
     /// </summary>
     /// <param name="id">Primary key value.</param>
     /// <returns>Entity that has the given id.</returns>
-    Task<T> GetByIdAsync(TId id);
+    Task<T?> GetByIdAsync(TId id);
 
     /// <summary>
     /// Retrieves paginated list of the entities.
     /// </summary>
     /// <param name="pagingArgs">Paging arguments.</param>
     /// <returns>Paginated list of entities.</returns>
-    Task<IReadOnlyList<T>> ListAllAsync(PagingArgs pagingArgs);
+    Task<IReadOnlyList<T>?> ListAllAsync(PagingArgs pagingArgs);
 
     /// <summary>
     /// Adds given entities to the database.
     /// </summary>
     /// <param name="entities">Entities that will be added to database.</param>
     /// <returns>Added entities.</returns>
-    Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
+    Task<IEnumerable<T>?> AddRangeAsync(IEnumerable<T> entities);
 
     /// <summary>
     /// Updates data of the entity with given id.
@@ -37,14 +37,14 @@ public interface IBaseRepository<T, TId> where T : IBaseEntity<TId>
     /// <param name="id">Primary key value of the entity.</param>
     /// <param name="entity">New data for the entity.</param>
     /// <returns>Updated entity.</returns>
-    Task<T> UpdateAsync(TId id, T entity);
+    Task<T?> UpdateAsync(TId id, T entity);
 
     /// <summary>
     /// Adds new entity to the database.
     /// </summary>
     /// <param name="entity">Entity data.</param>
     /// <returns>Newly added entity.</returns>
-    Task<T> SaveAsync(T entity);
+    Task<T?> SaveAsync(T entity);
 
     /// <summary>
     /// Deletes entity from the database.

@@ -14,4 +14,10 @@ public sealed class PagingArgs
     /// Page size.
     /// </summary>
     public int Size { get; set; }
+
+    public PagingArgs(int index, int size)
+    {
+        Index = index > 0 ? index : 1;
+        Size = size > 0 ? size : 10;
+    }
 }

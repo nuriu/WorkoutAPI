@@ -28,4 +28,14 @@ public sealed class WorkoutMySQLDatabase : IWorkoutDatabase
 
         return result;
     }
+
+    public async Task<DbDataReader?> CallStoredProcedureAsync(string spName, IEnumerable<DbParameter> parameters)
+    {
+        var cmd = new MySqlCommand(spName, Connection as MySqlConnection);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddRange(parameters.ToArray());
+        var result = await cmd.ExecuteReaderAsync();
+
+        return result;
+    }
 }

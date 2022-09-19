@@ -2,6 +2,7 @@ using Workout.Application.Models;
 using Workout.Core.Entities;
 using Workout.Core.Querying;
 using Workout.Core.Repositories;
+using Workout.Infrastructure.Querying;
 
 namespace Workout.Application.Services;
 
@@ -20,39 +21,36 @@ public sealed class UserService : IUserService
         return await _repository.AuthenticateAsync(new User(username, password));
     }
 
-    public async Task<UserModel> CreateUser(UserModel user)
+    public async Task<UserModel?> CreateUser(UserModel user)
     {
         var createdUser = await _repository.SaveAsync(new User(user.Username, user.Password));
-        return new UserModel(createdUser.Id, createdUser.Username, createdUser.Password);
+        if (createdUser != null)
+        {
+            return new UserModel(createdUser.Id, createdUser.Username, string.Empty, createdUser.CreatedAt, createdUser.UpdatedAt);
+        }
+
+        return null;
     }
 
-    public async Task<bool> DeleteUserById(int userId)
-    {
-        return await _repository.DeleteAsync(userId);
-    }
-
-    public async Task<UserModel> GetUserById(int userId)
+    public async Task<UserModel?> GetUserById(int userId)
     {
         var user = await _repository.GetByIdAsync(userId);
-        return new UserModel(user.Id, user.Username, user.Password);
+        if (user != null)
+        {
+            return new UserModel(user.Id, user.Username, string.Empty, user.CreatedAt, user.UpdatedAt);
+        }
+
+        return null;
     }
 
-    public async Task<IPagedList<UserModel>> GetUserList(PagingArgs pagingArgs)
+    public async Task<IPagedList<UserModel>?> GetUserList(PagingArgs pagingArgs)
     {
         var users = await _repository.ListAllAsync(pagingArgs);
-        // return new PagedList<UserModel>(pagingArgs, users);
+        if (users != null)
+        {
+            return new PagedList<UserModel>(pagingArgs, users.Select(x => new UserModel(x.Id, x.Username, string.Empty, x.CreatedAt, x.UpdatedAt)));
+        }
 
-        throw new NotImplementedException();
-    }
-
-    public Task<IPagedList<UserModel>> SearchUsers(PagingArgs pagingArgs, SearchArgs searchArgs)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<UserModel> UpdateUser(int userId, UserModel user)
-    {
-        var updatedUser = await _repository.UpdateAsync(userId, new User(user.Username, user.Password));
-        return new UserModel(updatedUser.Id, updatedUser.Username, updatedUser.Password);
+        return null;
     }
 }

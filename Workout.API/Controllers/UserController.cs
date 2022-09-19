@@ -8,7 +8,7 @@ namespace Workout.API.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]/[action]")]
+[Route("[controller]")]
 public class UsersController : ControllerBase
 {
     private readonly ILogger<UsersController> _logger;
@@ -22,7 +22,7 @@ public class UsersController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost]
+    [HttpPost("Authenticate")]
     public async Task<IActionResult> Authenticate([FromBody] UserModel user)
     {
         var userExists = await _service.AuthenticateUser(user.Username, user.Password);
@@ -38,17 +38,12 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Get([FromQuery] int pageIndex,
                                          [FromQuery] int pageSize)
     {
-        var users = await _service.GetUserList(new PagingArgs
-        {
-            Index = pageIndex,
-            Size = pageSize
-        });
-
+        var users = await _service.GetUserList(new PagingArgs(pageIndex, pageSize));
         return Ok(users);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Get(int id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get([FromRoute] int id)
     {
         var user = await _service.GetUserById(id);
         if (user != null)
@@ -62,31 +57,10 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] UserModel user)
     {
-        user = await _service.CreateUser(user);
-        return Ok(user);
-    }
-
-    [HttpPut]
-    public async Task<IActionResult> Put(int id, UserModel user)
-    {
-        var userControl = _service.GetUserById(id);
-        if (userControl != null)
+        var createdUser = await _service.CreateUser(user);
+        if (createdUser != null)
         {
-            user = await _service.UpdateUser(id, user);
-            return Ok(user);
-        }
-
-        return BadRequest();
-    }
-
-    [HttpDelete]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var userControl = _service.GetUserById(id);
-        if (userControl != null)
-        {
-            await _service.DeleteUserById(id);
-            return Ok();
+            return Ok(createdUser);
         }
 
         return BadRequest();

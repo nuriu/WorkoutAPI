@@ -18,14 +18,16 @@ public sealed class UserRepository : IUserRepository
         _db = db;
     }
 
-    public Task<IEnumerable<User>> AddRangeAsync(IEnumerable<User> entities)
+    [Obsolete]
+    public Task<IEnumerable<User>?> AddRangeAsync(IEnumerable<User> entities)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     public async Task<bool> AuthenticateAsync(User user)
     {
-        var isUserExists = await _db.CallScalarStoredProcedureAsync(SPList.IS_USER_EXISTS, new List<MySqlParameter> {
+        var isUserExists = await _db.CallScalarStoredProcedureAsync(SPList.IS_USER_EXISTS,
+        new List<MySqlParameter> {
             new MySqlParameter("username", user.Username),
             new MySqlParameter("password", user.Password),
         });
@@ -33,38 +35,120 @@ public sealed class UserRepository : IUserRepository
         return Convert.ToBoolean(isUserExists);
     }
 
-    public Task<int> CountAsync()
+    public async Task<uint> CountAsync()
     {
-        throw new NotImplementedException();
+        var userCount = await _db.CallScalarStoredProcedureAsync(SPList.GET_USER_COUNT,
+                                                                 Enumerable.Empty<MySqlParameter>());
+
+        return Convert.ToUInt32(userCount);
     }
 
-    public Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var deletedRowCount = await _db.CallScalarStoredProcedureAsync(SPList.DELETE_USER_BY_ID, new List<MySqlParameter> {
+            new MySqlParameter("id", id)
+        });
+
+        return Convert.ToInt32(deletedRowCount) > 0;
     }
 
-    public Task<User> GetByIdAsync(int id)
+    public async Task<User?> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        await _db.Connection.OpenAsync();
+        var reader = await _db.CallStoredProcedureAsync(SPList.GET_USER_BY_ID, new List<MySqlParameter> {
+            new MySqlParameter("id", id)
+        });
+
+        if (reader != null && reader.HasRows)
+        {
+            User? user = null;
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    user = new User(reader.GetInt32(reader.GetOrdinal("id")),
+                                        reader.GetString(reader.GetOrdinal("username")),
+                                        reader.GetString(reader.GetOrdinal("password")),
+                                        reader.GetDateTime(reader.GetOrdinal("created_at")),
+                                        reader.GetDateTime(reader.GetOrdinal("updated_at")));
+                    if (user != null)
+                    {
+                        break;
+                    }
+                }
+            }
+            await _db.Connection.CloseAsync();
+            return user;
+        }
+
+        return null;
     }
 
-    public Task<IReadOnlyList<User>> ListAllAsync(PagingArgs pagingArgs)
+    public async Task<IReadOnlyList<User>?> ListAllAsync(PagingArgs pagingArgs)
     {
-        throw new NotImplementedException();
+        await _db.Connection.OpenAsync();
+        var reader = await _db.CallStoredProcedureAsync(SPList.GET_USERS_PAGINATED, new List<MySqlParameter> {
+            new MySqlParameter("pageIndex", pagingArgs.Index),
+            new MySqlParameter("pageSize", pagingArgs.Size)
+        });
+
+        if (reader != null && reader.HasRows)
+        {
+            var users = new List<User>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var user = new User(reader.GetInt32(reader.GetOrdinal("id")),
+                                        reader.GetString(reader.GetOrdinal("username")),
+                                        reader.GetString(reader.GetOrdinal("password")),
+                                        reader.GetDateTime(reader.GetOrdinal("created_at")),
+                                        reader.GetDateTime(reader.GetOrdinal("updated_at")));
+                    users.Add(user);
+                }
+            }
+            await _db.Connection.CloseAsync();
+            return users;
+        }
+
+        return null;
     }
 
-    public Task<User> SaveAsync(User entity)
+    public async Task<User?> SaveAsync(User entity)
     {
-        throw new NotImplementedException();
+        await _db.Connection.OpenAsync();
+        var reader = await _db.CallStoredProcedureAsync(SPList.CREATE_USER, new List<MySqlParameter> {
+            new MySqlParameter("username", entity.Username),
+            new MySqlParameter("password", entity.Password)
+        });
+
+        if (reader != null && reader.HasRows)
+        {
+            User? user = null;
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    user = new User(reader.GetInt32(reader.GetOrdinal("id")),
+                                    reader.GetString(reader.GetOrdinal("username")),
+                                    reader.GetString(reader.GetOrdinal("password")),
+                                    reader.GetDateTime(reader.GetOrdinal("created_at")),
+                                    reader.GetDateTime(reader.GetOrdinal("updated_at")));
+                    if (user != null)
+                    {
+                        break;
+                    }
+                }
+            }
+            await _db.Connection.CloseAsync();
+            return user;
+        }
+
+        return null;
     }
 
-    public Task<User> SearchUsersAsync(PagingArgs pagingArgs, SearchArgs searchArgs)
+    public Task<User?> UpdateAsync(int id, User entity)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<User> UpdateAsync(int id, User entity)
-    {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 }

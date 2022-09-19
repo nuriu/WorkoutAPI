@@ -11,6 +11,15 @@ BEGIN
         username,
         MD5(password)
     );
+
+    SELECT
+        u.id,
+        u.username,
+        u.password,
+        u.created_at,
+        u.updated_at
+    FROM users u
+    WHERE u.username = username AND u.password = MD5(password);
 END//
 
 CREATE PROCEDURE IsUserExists(IN username VARCHAR(16), IN password VARCHAR(32))

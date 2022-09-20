@@ -5,7 +5,9 @@ public sealed class Movement : BaseEntity<uint>
     public string Name { get; set; }
     public string? Description { get; set; }
 
+    public MuscleGroup? MuscleGroup { get; set; }
     public uint MuscleGroupId { get; set; }
+
     public uint CreatorId { get; set; }
     public uint UpdaterId { get; set; }
 

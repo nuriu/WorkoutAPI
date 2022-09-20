@@ -12,10 +12,12 @@ namespace Workout.Infrastructure.Repositories;
 public sealed class MovementRepository : IMovementRepository
 {
     private readonly IWorkoutDatabase _db;
+    private readonly IMuscleGroupRepository _muscleGroupRepository;
 
-    public MovementRepository(IWorkoutDatabase db)
+    public MovementRepository(IWorkoutDatabase db, IMuscleGroupRepository muscleGroupRepository)
     {
         _db = db;
+        _muscleGroupRepository = muscleGroupRepository;
     }
 
     public Task<IEnumerable<Movement>?> AddRangeAsync(IEnumerable<Movement> entities)
@@ -62,6 +64,9 @@ public sealed class MovementRepository : IMovementRepository
                                             reader.GetFieldValue<uint>(reader.GetOrdinal("created_by")),
                                             reader.GetDateTime(reader.GetOrdinal("updated_at")),
                                             reader.GetFieldValue<uint>(reader.GetOrdinal("updated_by")));
+
+                    movement.MuscleGroup = await _muscleGroupRepository.GetByIdAsync(movement.MuscleGroupId);
+
                     if (movement != null)
                     {
                         break;
@@ -98,6 +103,7 @@ public sealed class MovementRepository : IMovementRepository
                                                 reader.GetFieldValue<uint>(reader.GetOrdinal("created_by")),
                                                 reader.GetDateTime(reader.GetOrdinal("updated_at")),
                                                 reader.GetFieldValue<uint>(reader.GetOrdinal("updated_by")));
+                    movement.MuscleGroup = await _muscleGroupRepository.GetByIdAsync(movement.MuscleGroupId);
                     movements.Add(movement);
                 }
             }
@@ -114,6 +120,7 @@ public sealed class MovementRepository : IMovementRepository
         var reader = await _db.CallStoredProcedureAsync(SPList.CREATE_MOVEMENT, new List<MySqlParameter> {
             new MySqlParameter("name", entity.Name),
             new MySqlParameter("description", entity.Description),
+            new MySqlParameter("muscle_group_id", entity.MuscleGroupId),
             new MySqlParameter("userId", entity.CreatorId),
         });
 

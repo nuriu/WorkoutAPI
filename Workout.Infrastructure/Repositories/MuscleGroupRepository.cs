@@ -56,7 +56,7 @@ public sealed class MuscleGroupRepository : IMuscleGroupRepository
                 {
                     muscleGroup = new MuscleGroup(reader.GetFieldValue<uint>(reader.GetOrdinal("id")),
                                                   reader.GetString(reader.GetOrdinal("name")),
-                                                  reader.GetString(reader.GetOrdinal("description")),
+                                                  reader.GetSafeString(reader.GetOrdinal("description")),
                                                   reader.GetDateTime(reader.GetOrdinal("created_at")),
                                                   reader.GetFieldValue<uint>(reader.GetOrdinal("created_by")),
                                                   reader.GetDateTime(reader.GetOrdinal("updated_at")),
@@ -124,7 +124,7 @@ public sealed class MuscleGroupRepository : IMuscleGroupRepository
                 {
                     muscleGroup = new MuscleGroup(reader.GetFieldValue<uint>(reader.GetOrdinal("id")),
                                                   reader.GetString(reader.GetOrdinal("name")),
-                                                  reader.GetString(reader.GetOrdinal("description")),
+                                                  reader.GetSafeString(reader.GetOrdinal("description")),
                                                   reader.GetDateTime(reader.GetOrdinal("created_at")),
                                                   reader.GetFieldValue<uint>(reader.GetOrdinal("created_by")),
                                                   reader.GetDateTime(reader.GetOrdinal("updated_at")),

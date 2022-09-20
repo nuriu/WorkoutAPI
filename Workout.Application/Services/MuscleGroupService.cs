@@ -11,13 +11,11 @@ public sealed class MuscleGroupService : IMuscleGroupService
 {
     private readonly IMuscleGroupRepository _repository;
     private readonly IMapper _mapper;
-    private readonly IUserService _userService;
 
-    public MuscleGroupService(IMuscleGroupRepository repository, IMapper mapper, IUserService userService)
+    public MuscleGroupService(IMuscleGroupRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
-        _userService = userService;
     }
 
     public async Task<MuscleGroupModel?> CreateMuscleGroup(MuscleGroupModel muscleGroup)

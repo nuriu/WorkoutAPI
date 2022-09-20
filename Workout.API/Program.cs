@@ -40,10 +40,12 @@ builder.Services.AddTransient<IWorkoutDatabase>(_ => new WorkoutMySQLDatabase(co
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDifficultyLevelRepository, DifficultyLevelRepository>();
 builder.Services.AddScoped<IMuscleGroupRepository, MuscleGroupRepository>();
+builder.Services.AddScoped<IMovementRepository, MovementRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDifficultyLevelService, DifficultyLevelService>();
 builder.Services.AddScoped<IMuscleGroupService, MuscleGroupService>();
+builder.Services.AddScoped<IMovementService, MovementService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();

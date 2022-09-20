@@ -24,10 +24,8 @@ END//
 
 CREATE PROCEDURE IsUserExists(IN username VARCHAR(16), IN password VARCHAR(32))
 BEGIN
-    SELECT EXISTS (
-        SELECT * FROM users u
-        WHERE u.username = username AND u.password = MD5(password)
-    ) AS UserExists;
+    SELECT u.Id FROM users u
+    WHERE u.username = username AND u.password = MD5(password);
 END//
 
 CREATE PROCEDURE GetUserById(IN id INT UNSIGNED)
@@ -203,5 +201,79 @@ BEGIN
     DELETE FROM muscle_groups mg WHERE mg.id = id;
     SELECT ROW_COUNT() AS DeletedRecordCount;
 END//
+
+CREATE PROCEDURE CreateMovement(IN name VARCHAR(32), IN description VARCHAR(128), IN muscle_group_id INT UNSIGNED, IN userId INT UNSIGNED)
+BEGIN
+    INSERT INTO movements (
+        name,
+        description,
+        muscle_group_id,
+        created_by,
+        updated_by
+    ) VALUES (
+        name,
+        description,
+        muscle_group_id,
+        userId,
+        userId
+    );
+
+    SELECT
+        m.id,
+        m.name,
+        m.description,
+        m.muscle_group_id,
+        m.created_at,
+        m.created_by,
+        m.updated_at,
+        m.updated_by
+    FROM movements m
+    ORDER BY m.id DESC LIMIT 1;
+END//
+
+CREATE PROCEDURE GetMovementById(IN id INT UNSIGNED)
+BEGIN
+    SELECT
+        m.id,
+        m.name,
+        m.description,
+        m.muscle_group_id,
+        m.created_at,
+        m.created_by,
+        m.updated_at,
+        m.updated_by
+    FROM movements m
+    WHERE m.id = id;
+END//
+
+CREATE PROCEDURE GetMovementCount()
+BEGIN
+    SELECT COUNT(*) AS MovementCount FROM movements;
+END//
+
+CREATE PROCEDURE GetMovementsPaginated(IN pageIndex INT UNSIGNED, IN pageSize INT UNSIGNED)
+BEGIN
+    DECLARE skipCount INT;
+    SET skipCount = (pageIndex - 1) * pageSize;
+    SELECT
+        m.id,
+        m.name,
+        m.description,
+        m.muscle_group_id,
+        m.created_at,
+        m.created_by,
+        m.updated_at,
+        m.updated_by
+    FROM movements m
+    LIMIT pageSize
+    OFFSET skipCount;
+END//
+
+CREATE PROCEDURE DeleteMovementById(IN id INT UNSIGNED)
+BEGIN
+    DELETE FROM movements m WHERE m.id = id;
+    SELECT ROW_COUNT() AS DeletedRecordCount;
+END//
+
 
 DELIMITER ;

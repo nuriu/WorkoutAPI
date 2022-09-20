@@ -1,6 +1,5 @@
 DROP PROCEDURE IF EXISTS SeedMovementTable;
 DROP PROCEDURE IF EXISTS SeedWorkoutTable;
-DROP PROCEDURE IF EXISTS SeedMovementMuscleGroupsTable;
 DROP PROCEDURE IF EXISTS SeedWorkoutMovementsTable;
 
 DELIMITER //
@@ -12,10 +11,12 @@ BEGIN
     CREATE TEMPORARY TABLE t SELECT * FROM movements LIMIT 0;
 
     SELECT id INTO @admin_id FROM users WHERE username = 'admin' LIMIT 1;
+    SELECT COUNT(*) INTO @muscle_groups_count FROM muscle_groups;
 
     WHILE i <= 1000000 DO
-        INSERT INTO t(name, description, created_by, updated_by)
-        VALUES (CONCAT("Movement", '-', i), CONCAT("Movement Description", '-', i), @admin_id, @admin_id);
+        SELECT FLOOR(RAND() * (@muscle_groups_count - 2) + 1) INTO @mg_id;
+        INSERT INTO t(name, description, muscle_group_id, created_by, updated_by)
+        VALUES (CONCAT("Movement", '-', i), CONCAT("Movement Description", '-', i), @mg_id, @admin_id, @admin_id);
 
         SET i = i + 1;
     END WHILE;
@@ -46,28 +47,6 @@ BEGIN
     DROP TEMPORARY TABLE t;
 END//
 
-CREATE PROCEDURE SeedMovementMuscleGroupsTable()
-BEGIN
-    DECLARE i int DEFAULT 1;
-
-    DROP TEMPORARY TABLE IF EXISTS t;
-    CREATE TEMPORARY TABLE t SELECT * FROM movement_muscle_groups LIMIT 0;
-
-    SELECT COUNT(*) INTO @movements_count FROM movements;
-    SELECT COUNT(*) INTO @muscle_groups_count FROM muscle_groups;
-
-    WHILE i <= @movements_count DO
-        SELECT FLOOR(RAND() * (@muscle_groups_count - 2) + 1) INTO @mg_id;
-
-        INSERT INTO t(movement_id, muscle_group_id) VALUES (i, @mg_id);
-
-        SET i = i + 1;
-    END WHILE;
-
-    INSERT INTO movement_muscle_groups SELECT * FROM t;
-    DROP TEMPORARY TABLE t;
-END//
-
 CREATE PROCEDURE SeedWorkoutMovementsTable()
 BEGIN
     DECLARE i int DEFAULT 1;
@@ -94,10 +73,8 @@ DELIMITER ;
 
 CALL SeedMovementTable();
 CALL SeedWorkoutTable();
-CALL SeedMovementMuscleGroupsTable();
 CALL SeedWorkoutMovementsTable();
 
 DROP PROCEDURE IF EXISTS SeedMovementTable;
 DROP PROCEDURE IF EXISTS SeedWorkoutTable;
-DROP PROCEDURE IF EXISTS SeedMovementMuscleGroupsTable;
 DROP PROCEDURE IF EXISTS SeedWorkoutMovementsTable;

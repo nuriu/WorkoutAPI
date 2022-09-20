@@ -24,19 +24,14 @@ CREATE TABLE IF NOT EXISTS movements (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
     description VARCHAR(1024),
+    muscle_group_id INT UNSIGNED NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     created_by INT UNSIGNED NOT NULL,
     updated_at TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
     updated_by INT UNSIGNED NOT NULL,
+    CONSTRAINT fk_movements_muscle_group FOREIGN KEY (muscle_group_id) REFERENCES muscle_groups(id),
     CONSTRAINT fk_movements_creator FOREIGN KEY (created_by) REFERENCES users(id),
     CONSTRAINT fk_movements_updater FOREIGN KEY (updated_by) REFERENCES users(id)
-);
-
-CREATE TABLE IF NOT EXISTS movement_muscle_groups (
-    movement_id INT UNSIGNED NOT NULL,
-    muscle_group_id INT UNSIGNED NOT NULL,
-    CONSTRAINT fk_movement_muscle_groups_movement FOREIGN KEY (movement_id) REFERENCES movements(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_movement_muscle_groups_muscle_group FOREIGN KEY (muscle_group_id) REFERENCES muscle_groups(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS difficulty_levels (

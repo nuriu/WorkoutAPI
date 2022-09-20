@@ -13,7 +13,7 @@ public sealed class AuthorizeAttribute : Attribute, IAuthorizationFilter
             return;
 
         uint userId = 0;
-        var retrievedUserId = context.HttpContext.Items["UserId"];
+        var retrievedUserId = (uint?)context.HttpContext.Items["UserId"];
         if (retrievedUserId != null)
         {
             userId = (uint)(retrievedUserId);

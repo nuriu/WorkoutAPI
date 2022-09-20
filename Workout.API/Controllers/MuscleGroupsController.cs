@@ -54,7 +54,7 @@ public class MuscleGroupsController : ControllerBase
             return Ok(createdUser);
         }
 
-        _logger.LogError("Couldn't create muscle grup. Muscle Group: {0}:{1}", muscleGroup.Name, muscleGroup.Description);
+        _logger.LogError("Couldn't create muscle group. Muscle Group: {0}:{1}", muscleGroup.Name, muscleGroup.Description);
         return BadRequest();
     }
 

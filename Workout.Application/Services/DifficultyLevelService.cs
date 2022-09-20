@@ -11,13 +11,11 @@ public sealed class DifficultyLevelService : IDifficultyLevelService
 {
     private readonly IDifficultyLevelRepository _repository;
     private readonly IMapper _mapper;
-    private readonly IUserService _userService;
 
-    public DifficultyLevelService(IDifficultyLevelRepository repository, IMapper mapper, IUserService userService)
+    public DifficultyLevelService(IDifficultyLevelRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
-        _userService = userService;
     }
 
     public async Task<DifficultyLevelModel?> CreateDifficultyLevel(DifficultyLevelModel difficultyLevel)

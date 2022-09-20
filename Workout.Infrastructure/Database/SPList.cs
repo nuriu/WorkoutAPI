@@ -26,4 +26,12 @@ public static class SPList
     public const string GET_MUSCLE_GROUPS_PAGINATED = "GetMuscleGroupsPaginated";
     public const string DELETE_MUSCLE_GROUP_BY_ID = "DeleteMuscleGroupById";
     #endregion
+
+    #region MOVEMENT
+    public const string CREATE_MOVEMENT = "CreateMovement";
+    public const string GET_MOVEMENT_BY_ID = "GetMovementById";
+    public const string GET_MOVEMENT_COUNT = "GetMovementCount";
+    public const string GET_MOVEMENTS_PAGINATED = "GetMovementsPaginated";
+    public const string DELETE_MOVEMENT_BY_ID = "DeleteMovementById";
+    #endregion
 }

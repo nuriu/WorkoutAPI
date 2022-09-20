@@ -25,8 +25,8 @@ public class UsersController : ControllerBase
     [HttpPost("Authenticate")]
     public async Task<IActionResult> Authenticate([FromBody] UserLoginModel user)
     {
-        var userExists = await _service.AuthenticateUser(user.Username, user.Password);
-        if (userExists)
+        var userId = await _service.AuthenticateUser(user.Username, user.Password);
+        if (userId != 0)
         {
             return Ok();
         }

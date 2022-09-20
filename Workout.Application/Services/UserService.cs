@@ -18,7 +18,7 @@ public sealed class UserService : IUserService
         _mapper = mapper;
     }
 
-    public async Task<bool> AuthenticateUser(string username, string password)
+    public async Task<uint> AuthenticateUser(string username, string password)
     {
         return await _repository.AuthenticateAsync(new User(username, password));
     }

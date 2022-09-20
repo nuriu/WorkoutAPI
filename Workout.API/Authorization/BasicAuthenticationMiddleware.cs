@@ -21,7 +21,7 @@ public sealed class BasicAuthenticationMiddleware
             var credentialBytes = Convert.FromBase64String(authenticationHeader.Parameter);
             var credentials = Encoding.UTF8.GetString(credentialBytes).Split(':', 2);
 
-            context.Items["User"] = await userService.AuthenticateUser(credentials[0], credentials[1]);
+            context.Items["UserId"] = await userService.AuthenticateUser(credentials[0], credentials[1]);
         }
         catch
         {

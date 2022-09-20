@@ -8,7 +8,7 @@ namespace Workout.Application.Services;
 /// </summary>
 public interface IUserService
 {
-    Task<bool> AuthenticateUser(string username, string password);
+    Task<uint> AuthenticateUser(string username, string password);
     Task<IPagedList<UserModel>?> GetUserList(PagingArgs pagingArgs);
     Task<UserModel?> GetUserById(uint userId);
     Task<UserModel?> CreateUser(UserLoginModel user);

@@ -8,6 +8,6 @@ public interface IUserRepository : IRepository<User>
     /// Checks if user exists in the database.
     /// </summary>
     /// <param name="user">User entity to perform check on.</param>
-    /// <returns>A boolean representing given user's existence.</returns>
-    Task<bool> AuthenticateAsync(User user);
+    /// <returns>A uint representing given user's primary key.</returns>
+    Task<uint> AuthenticateAsync(User user);
 }

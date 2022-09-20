@@ -24,14 +24,14 @@ public sealed class UserRepository : IUserRepository
         throw new NotSupportedException();
     }
 
-    public async Task<bool> AuthenticateAsync(User user)
+    public async Task<uint> AuthenticateAsync(User user)
     {
-        var isUserExists = await _db.CallScalarStoredProcedureAsync(SPList.IS_USER_EXISTS, new List<MySqlParameter> {
+        var userId = await _db.CallScalarStoredProcedureAsync(SPList.IS_USER_EXISTS, new List<MySqlParameter> {
             new MySqlParameter("username", user.Username),
             new MySqlParameter("password", user.Password),
         });
 
-        return Convert.ToBoolean(isUserExists);
+        return (userId != null) ? (uint)(userId) : 0;
     }
 
     public async Task<uint> CountAsync()
@@ -65,7 +65,7 @@ public sealed class UserRepository : IUserRepository
             {
                 while (await reader.ReadAsync())
                 {
-                    user = new User((uint)(reader.GetOrdinal("id")),
+                    user = new User(reader.GetFieldValue<uint>(reader.GetOrdinal("id")),
                                     reader.GetString(reader.GetOrdinal("username")),
                                     reader.GetString(reader.GetOrdinal("password")),
                                     reader.GetDateTime(reader.GetOrdinal("created_at")),
@@ -98,7 +98,7 @@ public sealed class UserRepository : IUserRepository
             {
                 while (await reader.ReadAsync())
                 {
-                    var user = new User((uint)(reader.GetOrdinal("id")),
+                    var user = new User(reader.GetFieldValue<uint>(reader.GetOrdinal("id")),
                                         reader.GetString(reader.GetOrdinal("username")),
                                         reader.GetString(reader.GetOrdinal("password")),
                                         reader.GetDateTime(reader.GetOrdinal("created_at")),
@@ -128,7 +128,7 @@ public sealed class UserRepository : IUserRepository
             {
                 while (await reader.ReadAsync())
                 {
-                    user = new User((uint)(reader.GetOrdinal("id")),
+                    user = new User(reader.GetFieldValue<uint>(reader.GetOrdinal("id")),
                                     reader.GetString(reader.GetOrdinal("username")),
                                     reader.GetString(reader.GetOrdinal("password")),
                                     reader.GetDateTime(reader.GetOrdinal("created_at")),

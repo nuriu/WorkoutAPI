@@ -12,8 +12,14 @@ public sealed class AuthorizeAttribute : Attribute, IAuthorizationFilter
         if (hasAllowAnonymousAttribute)
             return;
 
-        var user = Convert.ToBoolean(context.HttpContext.Items["User"]);
-        if (user == false)
+        uint userId = 0;
+        var retrievedUserId = context.HttpContext.Items["UserId"];
+        if (retrievedUserId != null)
+        {
+            userId = (uint)(retrievedUserId);
+        }
+
+        if (userId == 0)
         {
             context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
             context.HttpContext.Response.Headers["WWW-Authenticate"] = "Basic realm=\"\", charset=\"UTF-8\"";

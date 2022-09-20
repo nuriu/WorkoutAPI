@@ -10,5 +10,6 @@ public sealed class MapperProfiles : Profile
     {
         CreateMap<User, UserModel>().ReverseMap();
         CreateMap<User, UserLoginModel>().ReverseMap();
+        CreateMap<DifficultyLevel, DifficultyLevelModel>().ReverseMap();
     }
 }

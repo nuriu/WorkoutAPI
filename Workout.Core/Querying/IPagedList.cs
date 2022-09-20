@@ -8,17 +8,37 @@ namespace Workout.Core.Querying;
 public interface IPagedList<out T>
 {
     /// <summary>
-    /// Page index.
+    /// Index of the data page. Starts from 1.
     /// </summary>
-    int PageIndex { get; }
+    uint PageIndex { get; }
 
     /// <summary>
-    /// Page size.
+    /// Size of the data page.
     /// </summary>
-    int PageSize { get; }
+    uint PageSize { get; }
 
     /// <summary>
-    /// Data.
+    /// Count of total data items.
+    /// </summary>
+    uint TotalItemCount { get; }
+
+    /// <summary>
+    /// Count of total data pages.
+    /// </summary>
+    uint TotalPageCount { get; }
+
+    /// <summary>
+    /// Does previous data page exists.
+    /// </summary>
+    bool HasPreviousPage { get; }
+
+    /// <summary>
+    /// Does next data page exists.
+    /// </summary>
+    bool HasNextPage { get; }
+
+    /// <summary>
+    /// Data items.
     /// </summary>
     IEnumerable<T> Items { get; }
 }

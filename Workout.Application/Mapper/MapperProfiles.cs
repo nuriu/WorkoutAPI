@@ -8,7 +8,7 @@ public sealed class MapperProfiles : Profile
 {
     public MapperProfiles()
     {
-        CreateMap<User, UserModel>();
-        CreateMap<UserLoginModel, User>();
+        CreateMap<User, UserModel>().ReverseMap();
+        CreateMap<User, UserLoginModel>().ReverseMap();
     }
 }

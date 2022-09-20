@@ -42,7 +42,7 @@ public sealed class UserRepository : IUserRepository
         return Convert.ToUInt32(userCount);
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(uint id)
     {
         var deletedRowCount = await _db.CallScalarStoredProcedureAsync(SPList.DELETE_USER_BY_ID, new List<MySqlParameter> {
             new MySqlParameter("id", id)
@@ -51,7 +51,7 @@ public sealed class UserRepository : IUserRepository
         return Convert.ToInt32(deletedRowCount) > 0;
     }
 
-    public async Task<User?> GetByIdAsync(int id)
+    public async Task<User?> GetByIdAsync(uint id)
     {
         await _db.Connection.OpenAsync();
         var reader = await _db.CallStoredProcedureAsync(SPList.GET_USER_BY_ID, new List<MySqlParameter> {
@@ -65,7 +65,7 @@ public sealed class UserRepository : IUserRepository
             {
                 while (await reader.ReadAsync())
                 {
-                    user = new User(reader.GetInt32(reader.GetOrdinal("id")),
+                    user = new User((uint)(reader.GetOrdinal("id")),
                                     reader.GetString(reader.GetOrdinal("username")),
                                     reader.GetString(reader.GetOrdinal("password")),
                                     reader.GetDateTime(reader.GetOrdinal("created_at")),
@@ -98,7 +98,7 @@ public sealed class UserRepository : IUserRepository
             {
                 while (await reader.ReadAsync())
                 {
-                    var user = new User(reader.GetInt32(reader.GetOrdinal("id")),
+                    var user = new User((uint)(reader.GetOrdinal("id")),
                                         reader.GetString(reader.GetOrdinal("username")),
                                         reader.GetString(reader.GetOrdinal("password")),
                                         reader.GetDateTime(reader.GetOrdinal("created_at")),
@@ -128,7 +128,7 @@ public sealed class UserRepository : IUserRepository
             {
                 while (await reader.ReadAsync())
                 {
-                    user = new User(reader.GetInt32(reader.GetOrdinal("id")),
+                    user = new User((uint)(reader.GetOrdinal("id")),
                                     reader.GetString(reader.GetOrdinal("username")),
                                     reader.GetString(reader.GetOrdinal("password")),
                                     reader.GetDateTime(reader.GetOrdinal("created_at")),
@@ -146,7 +146,7 @@ public sealed class UserRepository : IUserRepository
         return null;
     }
 
-    public Task<User?> UpdateAsync(int id, User entity)
+    public Task<User?> UpdateAsync(uint id, User entity)
     {
         throw new NotSupportedException();
     }

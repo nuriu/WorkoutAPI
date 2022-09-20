@@ -36,15 +36,15 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] int pageIndex,
-                                         [FromQuery] int pageSize)
+    public async Task<IActionResult> Get([FromQuery] uint pageIndex,
+                                         [FromQuery] uint pageSize)
     {
         var users = await _service.GetUserList(new PagingArgs(pageIndex, pageSize));
         return Ok(users);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get([FromRoute] int id)
+    public async Task<IActionResult> Get([FromRoute] uint id)
     {
         var user = await _service.GetUserById(id);
         if (user != null)

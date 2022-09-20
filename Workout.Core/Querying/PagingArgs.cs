@@ -8,14 +8,14 @@ public sealed class PagingArgs
     /// <summary>
     /// Page index.
     /// </summary>
-    public int Index { get; set; }
+    public uint Index { get; set; }
 
     /// <summary>
     /// Page size.
     /// </summary>
-    public int Size { get; set; }
+    public uint Size { get; set; }
 
-    public PagingArgs(int index, int size)
+    public PagingArgs(uint index, uint size)
     {
         Index = index > 0 ? index : 1;
         Size = size > 0 ? size : 10;

@@ -34,7 +34,7 @@ public sealed class UserService : IUserService
         return null;
     }
 
-    public async Task<UserModel?> GetUserById(int userId)
+    public async Task<UserModel?> GetUserById(uint userId)
     {
         var user = await _repository.GetByIdAsync(userId);
         if (user != null)
@@ -50,7 +50,10 @@ public sealed class UserService : IUserService
         var users = await _repository.ListAllAsync(pagingArgs);
         if (users != null)
         {
-            return new PagedList<UserModel>(pagingArgs, _mapper.Map<IReadOnlyList<UserModel>>(users));
+            var userCount = await _repository.CountAsync();
+            return new PagedList<UserModel>(pagingArgs,
+                                            userCount,
+                                            _mapper.Map<IReadOnlyList<UserModel>>(users));
         }
 
         return null;

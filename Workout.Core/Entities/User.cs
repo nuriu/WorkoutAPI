@@ -1,6 +1,6 @@
 namespace Workout.Core.Entities;
 
-public class User : BaseEntity<int>
+public sealed class User : BaseEntity<uint>
 {
     public string Username { get; set; }
     public string Password { get; set; }
@@ -11,7 +11,11 @@ public class User : BaseEntity<int>
         Password = password;
     }
 
-    public User(int id, string username, string password, DateTime createdAt, DateTime updatedAt)
+    public User(uint id,
+                string username,
+                string password,
+                DateTime createdAt,
+                DateTime updatedAt)
     {
         Id = id;
         Username = username;

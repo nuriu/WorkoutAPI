@@ -36,21 +36,7 @@ public sealed class DifficultyLevelService : IDifficultyLevelService
         var difficultyLevel = await _repository.GetByIdAsync(difficultyLevelId);
         if (difficultyLevel != null)
         {
-            var df = _mapper.Map<DifficultyLevelModel>(difficultyLevel);
-
-            var creator = await _userService.GetUserById(difficultyLevel.CreatedById);
-            if (creator != null)
-            {
-                df.CreatedBy = creator;
-            }
-
-            var updater = await _userService.GetUserById(difficultyLevel.UpdatedById);
-            if (updater != null)
-            {
-                df.UpdatedBy = updater;
-            }
-
-            return df;
+            return _mapper.Map<DifficultyLevelModel>(difficultyLevel);
         }
 
         return null;

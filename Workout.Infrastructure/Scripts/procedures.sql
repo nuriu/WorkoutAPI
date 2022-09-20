@@ -136,4 +136,72 @@ BEGIN
     SELECT ROW_COUNT() AS DeletedRecordCount;
 END//
 
+CREATE PROCEDURE CreateMuscleGroup(IN name VARCHAR(32), IN description VARCHAR(128), IN userId INT UNSIGNED)
+BEGIN
+    INSERT INTO muscle_groups (
+        name,
+        description,
+        created_by,
+        updated_by
+    ) VALUES (
+        name,
+        description,
+        userId,
+        userId
+    );
+
+    SELECT
+        mg.id,
+        mg.name,
+        mg.description,
+        mg.created_at,
+        mg.created_by,
+        mg.updated_at,
+        mg.updated_by
+    FROM muscle_groups mg
+    ORDER BY mg.id DESC LIMIT 1;
+END//
+
+CREATE PROCEDURE GetMuscleGroupById(IN id INT UNSIGNED)
+BEGIN
+    SELECT
+        mg.id,
+        mg.name,
+        mg.description,
+        mg.created_at,
+        mg.created_by,
+        mg.updated_at,
+        mg.updated_by
+    FROM muscle_groups mg
+    WHERE mg.id = id;
+END//
+
+CREATE PROCEDURE GetMuscleGroupCount()
+BEGIN
+    SELECT COUNT(*) AS MuscleGroupCount FROM muscle_groups;
+END//
+
+CREATE PROCEDURE GetMuscleGroupsPaginated(IN pageIndex INT UNSIGNED, IN pageSize INT UNSIGNED)
+BEGIN
+    DECLARE skipCount INT;
+    SET skipCount = (pageIndex - 1) * pageSize;
+    SELECT
+        mg.id,
+        mg.name,
+        mg.description,
+        mg.created_at,
+        mg.created_by,
+        mg.updated_at,
+        mg.updated_by
+    FROM muscle_groups mg
+    LIMIT pageSize
+    OFFSET skipCount;
+END//
+
+CREATE PROCEDURE DeleteMuscleGroupById(IN id INT UNSIGNED)
+BEGIN
+    DELETE FROM muscle_groups mg WHERE mg.id = id;
+    SELECT ROW_COUNT() AS DeletedRecordCount;
+END//
+
 DELIMITER ;

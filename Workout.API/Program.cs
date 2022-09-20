@@ -38,7 +38,12 @@ var connectionString = String.Format("Server={0};User ID={1};Password={2};Port={
 builder.Services.AddTransient<IWorkoutDatabase>(_ => new WorkoutMySQLDatabase(connectionString));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IDifficultyLevelRepository, DifficultyLevelRepository>();
+builder.Services.AddScoped<IMuscleGroupRepository, MuscleGroupRepository>();
+
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IDifficultyLevelService, DifficultyLevelService>();
+builder.Services.AddScoped<IMuscleGroupService, MuscleGroupService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();

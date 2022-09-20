@@ -18,4 +18,12 @@ public static class SPList
     public const string GET_DIFFICULTY_LEVELS_PAGINATED = "GetDifficultyLevelsPaginated";
     public const string DELETE_DIFFICULTY_LEVEL_BY_ID = "DeleteDifficultyLevelById";
     #endregion
+
+    #region MUSCLE_GROUP
+    public const string CREATE_MUSCLE_GROUP = "CreateMuscleGroup";
+    public const string GET_MUSCLE_GROUP_BY_ID = "GetMuscleGroupById";
+    public const string GET_MUSCLE_GROUP_COUNT = "GetMuscleGroupCount";
+    public const string GET_MUSCLE_GROUPS_PAGINATED = "GetMuscleGroupsPaginated";
+    public const string DELETE_MUSCLE_GROUP_BY_ID = "DeleteMuscleGroupById";
+    #endregion
 }

@@ -275,5 +275,82 @@ BEGIN
     SELECT ROW_COUNT() AS DeletedRecordCount;
 END//
 
+CREATE PROCEDURE CreateWorkout(IN name VARCHAR(32), IN description VARCHAR(128), IN duration SMALLINT UNSIGNED, IN difficulty_level_id INT UNSIGNED, IN userId INT UNSIGNED)
+BEGIN
+    INSERT INTO workouts (
+        name,
+        description,
+        duration,
+        difficulty_level_id,
+        created_by,
+        updated_by
+    ) VALUES (
+        name,
+        description,
+        duration,
+        difficulty_level_id,
+        userId,
+        userId
+    );
+
+    SELECT
+        w.id,
+        w.name,
+        w.description,
+        w.duration,
+        w.difficulty_level_id,
+        w.created_at,
+        w.created_by,
+        w.updated_at,
+        w.updated_by
+    FROM workouts w
+    ORDER BY w.id DESC LIMIT 1;
+END//
+
+CREATE PROCEDURE GetWorkoutById(IN id INT UNSIGNED)
+BEGIN
+    SELECT
+        w.id,
+        w.name,
+        w.description,
+        w.duration,
+        w.difficulty_level_id,
+        w.created_at,
+        w.created_by,
+        w.updated_at,
+        w.updated_by
+    FROM workouts w
+    WHERE w.id = id;
+END//
+
+CREATE PROCEDURE GetWorkoutCount()
+BEGIN
+    SELECT COUNT(*) AS WorkoutCount FROM workouts;
+END//
+
+CREATE PROCEDURE GetWorkoutsPaginated(IN pageIndex INT UNSIGNED, IN pageSize INT UNSIGNED)
+BEGIN
+    DECLARE skipCount INT;
+    SET skipCount = (pageIndex - 1) * pageSize;
+    SELECT
+        w.id,
+        w.name,
+        w.description,
+        w.duration,
+        w.difficulty_level_id,
+        w.created_at,
+        w.created_by,
+        w.updated_at,
+        w.updated_by
+    FROM workouts w
+    LIMIT pageSize
+    OFFSET skipCount;
+END//
+
+CREATE PROCEDURE DeleteWorkoutById(IN id INT UNSIGNED)
+BEGIN
+    DELETE FROM workouts w WHERE w.id = id;
+    SELECT ROW_COUNT() AS DeletedRecordCount;
+END//
 
 DELIMITER ;

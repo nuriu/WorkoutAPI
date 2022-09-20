@@ -41,11 +41,13 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDifficultyLevelRepository, DifficultyLevelRepository>();
 builder.Services.AddScoped<IMuscleGroupRepository, MuscleGroupRepository>();
 builder.Services.AddScoped<IMovementRepository, MovementRepository>();
+builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDifficultyLevelService, DifficultyLevelService>();
 builder.Services.AddScoped<IMuscleGroupService, MuscleGroupService>();
 builder.Services.AddScoped<IMovementService, MovementService>();
+builder.Services.AddScoped<IWorkoutService, WorkoutService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();

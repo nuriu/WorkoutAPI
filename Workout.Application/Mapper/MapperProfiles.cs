@@ -13,5 +13,6 @@ public sealed class MapperProfiles : Profile
         CreateMap<DifficultyLevel, DifficultyLevelModel>().ReverseMap();
         CreateMap<MuscleGroup, MuscleGroupModel>().ReverseMap();
         CreateMap<Movement, MovementModel>().ReverseMap();
+        CreateMap<Core.Entities.Workout, WorkoutModel>().ReverseMap();
     }
 }

@@ -34,4 +34,12 @@ public static class SPList
     public const string GET_MOVEMENTS_PAGINATED = "GetMovementsPaginated";
     public const string DELETE_MOVEMENT_BY_ID = "DeleteMovementById";
     #endregion
+
+    #region WORKOUT
+    public const string CREATE_WORKOUT = "CreateWorkout";
+    public const string GET_WORKOUT_BY_ID = "GetWorkoutById";
+    public const string GET_WORKOUT_COUNT = "GetWorkoutCount";
+    public const string GET_WORKOUTS_PAGINATED = "GetWorkoutsPaginated";
+    public const string DELETE_WORKOUT_BY_ID = "DeleteWorkoutById";
+    #endregion
 }

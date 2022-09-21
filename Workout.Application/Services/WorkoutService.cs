@@ -17,6 +17,17 @@ public sealed class WorkoutService : IWorkoutService
         _mapper = mapper;
     }
 
+    public async Task<WorkoutModel?> AddMovementToWorkout(uint workoutId, uint movementId)
+    {
+        var workout = await _repository.AddMovementToWorkoutAsync(workoutId, movementId);
+        if (workout != null)
+        {
+            return _mapper.Map<WorkoutModel>(workout);
+        }
+
+        return null;
+    }
+
     public async Task<WorkoutModel?> CreateWorkout(WorkoutModel workout)
     {
         var createdWorkout = await _repository.SaveAsync(_mapper.Map<Core.Entities.Workout>(workout));
@@ -53,6 +64,17 @@ public sealed class WorkoutService : IWorkoutService
             return new PagedList<WorkoutModel>(pagingArgs,
                                                workoutCount,
                                                _mapper.Map<IReadOnlyList<WorkoutModel>>(workouts));
+        }
+
+        return null;
+    }
+
+    public async Task<WorkoutModel?> RemoveMovementFromWorkout(uint workoutId, uint movementId)
+    {
+        var workout = await _repository.RemoveMovementFromWorkoutAsync(workoutId, movementId);
+        if (workout != null)
+        {
+            return _mapper.Map<WorkoutModel>(workout);
         }
 
         return null;

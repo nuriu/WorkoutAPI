@@ -12,27 +12,30 @@ namespace Workout.API.Controllers;
 public class WorkoutsController : ControllerBase
 {
     private readonly ILogger<WorkoutsController> _logger;
-    private readonly IWorkoutService _service;
+    private readonly IWorkoutService _workoutService;
+    private readonly IMovementService _movementService;
 
     public WorkoutsController(ILogger<WorkoutsController> logger,
-                              IWorkoutService service)
+                              IWorkoutService workoutService,
+                              IMovementService movementService)
     {
         _logger = logger;
-        _service = service;
+        _workoutService = workoutService;
+        _movementService = movementService;
     }
 
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] uint pageIndex,
                                          [FromQuery] uint pageSize)
     {
-        var workouts = await _service.GetWorkoutList(new PagingArgs(pageIndex, pageSize));
+        var workouts = await _workoutService.GetWorkoutList(new PagingArgs(pageIndex, pageSize));
         return Ok(workouts);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Get([FromRoute] uint id)
     {
-        var workout = await _service.GetWorkoutById(id);
+        var workout = await _workoutService.GetWorkoutById(id);
         if (workout != null)
         {
             return Ok(workout);
@@ -48,7 +51,7 @@ public class WorkoutsController : ControllerBase
         workout.CreatorId = (uint)HttpContext.Items["UserId"];
         workout.UpdaterId = workout.CreatorId;
 
-        var createdUser = await _service.CreateWorkout(workout);
+        var createdUser = await _workoutService.CreateWorkout(workout);
         if (createdUser != null)
         {
             return Ok(createdUser);
@@ -58,9 +61,40 @@ public class WorkoutsController : ControllerBase
         return BadRequest();
     }
 
+    [HttpPut("{id}/Add/{movementId}")]
+    public async Task<IActionResult> Add([FromRoute] uint id, [FromRoute] uint movementId)
+    {
+        var workout = await _workoutService.GetWorkoutById(id);
+        var movement = await _movementService.GetMovementById(id);
+        if (workout != null && movement != null)
+        {
+            var w = await _workoutService.AddMovementToWorkout(id, movementId);
+            return Ok(w);
+        }
+
+        _logger.LogWarning("Workout or movement not found with given ids: {0}-", id, movementId);
+        return BadRequest();
+    }
+
+    [HttpPut("{id}/Remove/{movementId}")]
+    public async Task<IActionResult> Remove([FromRoute] uint id, [FromRoute] uint movementId)
+    {
+        var workout = await _workoutService.GetWorkoutById(id);
+        var movement = await _movementService.GetMovementById(id);
+        if (workout != null && movement != null)
+        {
+            var w = await _workoutService.RemoveMovementFromWorkout(id, movementId);
+            return Ok(w);
+        }
+
+        _logger.LogWarning("Workout or movement not found with given ids: {0}-", id, movementId);
+        return BadRequest();
+    }
+
+
     [HttpDelete]
     public async Task<IActionResult> Delete([FromRoute] uint id)
     {
-        return Ok(await _service.DeleteWorkoutById(id));
+        return Ok(await _workoutService.DeleteWorkoutById(id));
     }
 }

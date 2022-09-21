@@ -24,6 +24,16 @@ public sealed class WorkoutRepository : IWorkoutRepository
         _difficultyLevelRepository = difficultyLevelRepository;
     }
 
+    public async Task<Core.Entities.Workout?> AddMovementToWorkoutAsync(uint workoutId, uint movementId)
+    {
+        await _db.CallScalarStoredProcedureAsync(SPList.ADD_MOVEMENT_TO_WORKOUT, new List<MySqlParameter> {
+            new MySqlParameter("workoutId", workoutId),
+            new MySqlParameter("movementId", movementId)
+        });
+
+        return await GetByIdAsync(workoutId);
+    }
+
     public Task<IEnumerable<Core.Entities.Workout>?> AddRangeAsync(IEnumerable<Core.Entities.Workout> entities)
     {
         throw new NotSupportedException();
@@ -66,6 +76,7 @@ public sealed class WorkoutRepository : IWorkoutRepository
                         if (workout.DifficultyLevelId != null)
                         {
                             workout.DifficultyLevel = await _difficultyLevelRepository.GetByIdAsync((uint)workout.DifficultyLevelId);
+                            workout.Movements = await _movementRepository.GetMovementsByWorkoutIdAsync(workout.Id);
                         }
                         break;
                     }
@@ -97,6 +108,7 @@ public sealed class WorkoutRepository : IWorkoutRepository
                     if (workout != null && workout.DifficultyLevelId != null)
                     {
                         workout.DifficultyLevel = await _difficultyLevelRepository.GetByIdAsync((uint)workout.DifficultyLevelId);
+                        workout.Movements = await _movementRepository.GetMovementsByWorkoutIdAsync(workout.Id);
                     }
                     workouts.Add(workout);
                 }
@@ -106,6 +118,16 @@ public sealed class WorkoutRepository : IWorkoutRepository
         }
 
         return null;
+    }
+
+    public async Task<Core.Entities.Workout?> RemoveMovementFromWorkoutAsync(uint workoutId, uint movementId)
+    {
+        await _db.CallScalarStoredProcedureAsync(SPList.REMOVE_MOVEMENT_FROM_WORKOUT, new List<MySqlParameter> {
+            new MySqlParameter("workoutId", workoutId),
+            new MySqlParameter("movementId", movementId)
+        });
+
+        return await GetByIdAsync(workoutId);
     }
 
     public async Task<Core.Entities.Workout?> SaveAsync(Core.Entities.Workout entity)
@@ -130,6 +152,7 @@ public sealed class WorkoutRepository : IWorkoutRepository
                     if (workout != null && workout.DifficultyLevelId != null)
                     {
                         workout.DifficultyLevel = await _difficultyLevelRepository.GetByIdAsync((uint)workout.DifficultyLevelId);
+                        workout.Movements = await _movementRepository.GetMovementsByWorkoutIdAsync(workout.Id);
                     }
                     if (workout != null)
                     {

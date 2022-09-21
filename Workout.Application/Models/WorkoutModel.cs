@@ -17,6 +17,8 @@ public class WorkoutModel : BaseModel
 
     public uint? DifficultyLevelId { get; set; }
 
+    public List<MovementModel>? Movements { get; set; }
+
     public uint CreatorId { get; set; }
 
     public uint UpdaterId { get; set; }

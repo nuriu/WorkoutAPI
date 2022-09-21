@@ -1,3 +1,4 @@
+using System.Data.Common;
 using MySqlConnector;
 using Workout.Core.Entities;
 using Workout.Core.Querying;
@@ -56,15 +57,7 @@ public sealed class MovementRepository : IMovementRepository
             {
                 while (await reader.ReadAsync())
                 {
-                    movement = new Movement(reader.GetFieldValue<uint>(reader.GetOrdinal("id")),
-                                            reader.GetString(reader.GetOrdinal("name")),
-                                            reader.GetSafeString(reader.GetOrdinal("description")),
-                                            reader.GetFieldValue<uint>(reader.GetOrdinal("muscle_group_id")),
-                                            reader.GetDateTime(reader.GetOrdinal("created_at")),
-                                            reader.GetFieldValue<uint>(reader.GetOrdinal("created_by")),
-                                            reader.GetDateTime(reader.GetOrdinal("updated_at")),
-                                            reader.GetFieldValue<uint>(reader.GetOrdinal("updated_by")));
-
+                    movement = ConstructMovementFrom(reader);
                     movement.MuscleGroup = await _muscleGroupRepository.GetByIdAsync(movement.MuscleGroupId);
 
                     if (movement != null)
@@ -75,6 +68,32 @@ public sealed class MovementRepository : IMovementRepository
             }
             await _db.Connection.CloseAsync();
             return movement;
+        }
+
+        return null;
+    }
+
+    public async Task<IReadOnlyList<Movement>?> GetMovementsByWorkoutIdAsync(uint workoutId)
+    {
+        await _db.Connection.OpenAsync();
+        var reader = await _db.CallStoredProcedureAsync(SPList.GET_MOVEMENTS_BY_WORKOUT_ID, new List<MySqlParameter> {
+            new MySqlParameter("workoutId", workoutId)
+        });
+
+        if (reader != null && reader.HasRows)
+        {
+            var movements = new List<Movement>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var movement = ConstructMovementFrom(reader);
+                    movement.MuscleGroup = await _muscleGroupRepository.GetByIdAsync(movement.MuscleGroupId);
+                    movements.Add(movement);
+                }
+            }
+            await _db.Connection.CloseAsync();
+            return movements;
         }
 
         return null;
@@ -95,14 +114,7 @@ public sealed class MovementRepository : IMovementRepository
             {
                 while (await reader.ReadAsync())
                 {
-                    var movement = new Movement(reader.GetFieldValue<uint>(reader.GetOrdinal("id")),
-                                                reader.GetString(reader.GetOrdinal("name")),
-                                                reader.GetSafeString(reader.GetOrdinal("description")),
-                                                reader.GetFieldValue<uint>(reader.GetOrdinal("muscle_group_id")),
-                                                reader.GetDateTime(reader.GetOrdinal("created_at")),
-                                                reader.GetFieldValue<uint>(reader.GetOrdinal("created_by")),
-                                                reader.GetDateTime(reader.GetOrdinal("updated_at")),
-                                                reader.GetFieldValue<uint>(reader.GetOrdinal("updated_by")));
+                    var movement = ConstructMovementFrom(reader);
                     movement.MuscleGroup = await _muscleGroupRepository.GetByIdAsync(movement.MuscleGroupId);
                     movements.Add(movement);
                 }
@@ -131,14 +143,7 @@ public sealed class MovementRepository : IMovementRepository
             {
                 while (await reader.ReadAsync())
                 {
-                    movement = new Movement(reader.GetFieldValue<uint>(reader.GetOrdinal("id")),
-                                            reader.GetString(reader.GetOrdinal("name")),
-                                            reader.GetSafeString(reader.GetOrdinal("description")),
-                                            reader.GetFieldValue<uint>(reader.GetOrdinal("muscle_group_id")),
-                                            reader.GetDateTime(reader.GetOrdinal("created_at")),
-                                            reader.GetFieldValue<uint>(reader.GetOrdinal("created_by")),
-                                            reader.GetDateTime(reader.GetOrdinal("updated_at")),
-                                            reader.GetFieldValue<uint>(reader.GetOrdinal("updated_by")));
+                    movement = ConstructMovementFrom(reader);
                     if (movement != null)
                     {
                         break;
@@ -155,5 +160,22 @@ public sealed class MovementRepository : IMovementRepository
     public Task<Movement?> UpdateAsync(uint id, Movement entity)
     {
         throw new NotSupportedException();
+    }
+
+    private Movement? ConstructMovementFrom(DbDataReader reader)
+    {
+        if (reader != null && reader.HasRows)
+        {
+            return new Movement(reader.GetFieldValue<uint>(reader.GetOrdinal("id")),
+                                reader.GetString(reader.GetOrdinal("name")),
+                                reader.GetSafeString(reader.GetOrdinal("description")),
+                                reader.GetFieldValue<uint>(reader.GetOrdinal("muscle_group_id")),
+                                reader.GetDateTime(reader.GetOrdinal("created_at")),
+                                reader.GetFieldValue<uint>(reader.GetOrdinal("created_by")),
+                                reader.GetDateTime(reader.GetOrdinal("updated_at")),
+                                reader.GetFieldValue<uint>(reader.GetOrdinal("updated_by")));
+        }
+
+        return null;
     }
 }

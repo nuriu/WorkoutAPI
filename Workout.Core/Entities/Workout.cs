@@ -10,6 +10,8 @@ public sealed class Workout : BaseEntity<uint>
     public DifficultyLevel? DifficultyLevel { get; set; }
     public uint? DifficultyLevelId { get; set; }
 
+    public IReadOnlyList<Movement>? Movements { get; set; }
+
     public uint CreatorId { get; set; }
     public uint UpdaterId { get; set; }
 

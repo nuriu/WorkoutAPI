@@ -275,6 +275,22 @@ BEGIN
     SELECT ROW_COUNT() AS DeletedRecordCount;
 END//
 
+CREATE PROCEDURE GetMovementsByWorkoutId(IN workoutId INT UNSIGNED)
+BEGIN
+    SELECT
+        m.id,
+        m.name,
+        m.description,
+        m.muscle_group_id,
+        m.created_at,
+        m.created_by,
+        m.updated_at,
+        m.updated_by
+    FROM movements m
+    JOIN workout_movements wm ON m.id = wm.movement_id
+    WHERE wm.workout_id = workoutId;
+END//
+
 CREATE PROCEDURE CreateWorkout(IN name VARCHAR(32), IN description VARCHAR(128), IN duration SMALLINT UNSIGNED, IN difficulty_level_id INT UNSIGNED, IN userId INT UNSIGNED)
 BEGIN
     INSERT INTO workouts (
@@ -353,4 +369,15 @@ BEGIN
     SELECT ROW_COUNT() AS DeletedRecordCount;
 END//
 
+CREATE PROCEDURE AddMovementToWorkout(IN workoutId INT UNSIGNED, IN movementId INT UNSIGNED)
+BEGIN
+    INSERT IGNORE INTO workout_movements (workout_id, movement_id) VALUES (workoutId, movementId);
+END//
+
+CREATE PROCEDURE RemoveMovementFromWorkout(IN workoutId INT UNSIGNED, IN movementId INT UNSIGNED)
+BEGIN
+    DELETE FROM workout_movements
+    WHERE workout_id = workoutId AND movement_id = movementId
+        AND EXISTS(SELECT * FROM (SELECT * FROM workout_movements) wm where wm.workout_id = workoutId AND wm.movement_id = movementId LIMIT 1);
+END//
 DELIMITER ;

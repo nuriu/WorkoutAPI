@@ -12,4 +12,6 @@ public interface IWorkoutService
     Task<WorkoutModel?> GetWorkoutById(uint workoutId);
     Task<WorkoutModel?> CreateWorkout(WorkoutModel workout);
     Task<bool> DeleteWorkoutById(uint workoutId);
+    Task<WorkoutModel?> AddMovementToWorkout(uint workoutId, uint movementId);
+    Task<WorkoutModel?> RemoveMovementFromWorkout(uint workoutId, uint movementId);
 }

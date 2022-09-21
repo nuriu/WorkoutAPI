@@ -91,6 +91,12 @@ public class WorkoutsController : ControllerBase
         return BadRequest();
     }
 
+    [HttpGet("Search")]
+    public async Task<IActionResult> Search([FromQuery] ushort duration, [FromQuery] uint difficultyLevelId, [FromQuery] uint muscleGroupId)
+    {
+        var workouts = await _workoutService.SearchWorkouts(duration, difficultyLevelId, muscleGroupId);
+        return Ok(workouts);
+    }
 
     [HttpDelete]
     public async Task<IActionResult> Delete([FromRoute] uint id)

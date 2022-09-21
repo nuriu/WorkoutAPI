@@ -14,4 +14,5 @@ public interface IWorkoutService
     Task<bool> DeleteWorkoutById(uint workoutId);
     Task<WorkoutModel?> AddMovementToWorkout(uint workoutId, uint movementId);
     Task<WorkoutModel?> RemoveMovementFromWorkout(uint workoutId, uint movementId);
+    Task<IReadOnlyList<WorkoutModel>?> SearchWorkouts(ushort duration, uint difficultyLevelId, uint muscleGroupId);
 }

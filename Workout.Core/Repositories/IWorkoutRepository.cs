@@ -17,4 +17,6 @@ public interface IWorkoutRepository : IRepository<Core.Entities.Workout>
     /// <param name="movementId">Primary key value of the target mvement.</param>
     /// <returns>Workout entity that has the given id.</returns>
     Task<Core.Entities.Workout?> RemoveMovementFromWorkoutAsync(uint workoutId, uint movementId);
+
+    Task<IReadOnlyList<Core.Entities.Workout>?> SearchWorkoutsAsync(ushort duration, uint difficultyLevelId, uint muscleGroupId);
 }

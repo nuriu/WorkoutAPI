@@ -167,6 +167,38 @@ public sealed class WorkoutRepository : IWorkoutRepository
         return null;
     }
 
+    public async Task<IReadOnlyList<Core.Entities.Workout>?> SearchWorkoutsAsync(ushort duration, uint difficultyLevelId, uint muscleGroupId)
+    {
+        await _db.Connection.OpenAsync();
+        var reader = await _db.CallStoredProcedureAsync(SPList.SEARCH_WORKOUTS, new List<MySqlParameter> {
+            new MySqlParameter("duration", duration),
+            new MySqlParameter("difficultyLevelId", difficultyLevelId),
+            new MySqlParameter("muscleGroupId", muscleGroupId)
+        });
+
+        if (reader != null && reader.HasRows)
+        {
+            var workouts = new List<Core.Entities.Workout>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var workout = ConstructWorkoutFrom(reader);
+                    if (workout != null && workout.DifficultyLevelId != null)
+                    {
+                        workout.DifficultyLevel = await _difficultyLevelRepository.GetByIdAsync((uint)workout.DifficultyLevelId);
+                        workout.Movements = await _movementRepository.GetMovementsByWorkoutIdAsync(workout.Id);
+                    }
+                    workouts.Add(workout);
+                }
+            }
+            await _db.Connection.CloseAsync();
+            return workouts;
+        }
+
+        return null;
+    }
+
     public Task<Core.Entities.Workout?> UpdateAsync(uint id, Core.Entities.Workout entity)
     {
         throw new NotSupportedException();

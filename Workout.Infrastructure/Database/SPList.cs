@@ -44,5 +44,6 @@ public static class SPList
     public const string DELETE_WORKOUT_BY_ID = "DeleteWorkoutById";
     public const string ADD_MOVEMENT_TO_WORKOUT = "AddMovementToWorkout";
     public const string REMOVE_MOVEMENT_FROM_WORKOUT = "RemoveMovementFromWorkout";
+    public const string SEARCH_WORKOUTS = "SearchWorkouts";
     #endregion
 }

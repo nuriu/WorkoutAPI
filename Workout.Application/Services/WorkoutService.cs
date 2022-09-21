@@ -79,4 +79,16 @@ public sealed class WorkoutService : IWorkoutService
 
         return null;
     }
+
+    public async Task<IReadOnlyList<WorkoutModel>?> SearchWorkouts(ushort duration, uint difficultyLevelId, uint muscleGroupId)
+    {
+        var workouts = await _repository.SearchWorkoutsAsync(duration, difficultyLevelId, muscleGroupId);
+        if (workouts != null)
+        {
+            var workoutCount = await _repository.CountAsync();
+            return _mapper.Map<IReadOnlyList<WorkoutModel>>(workouts);
+        }
+
+        return null;
+    }
 }

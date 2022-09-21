@@ -380,4 +380,24 @@ BEGIN
     WHERE workout_id = workoutId AND movement_id = movementId
         AND EXISTS(SELECT * FROM (SELECT * FROM workout_movements) wm where wm.workout_id = workoutId AND wm.movement_id = movementId LIMIT 1);
 END//
+
+CREATE PROCEDURE SearchWorkouts(IN duration SMALLINT UNSIGNED, IN difficultyLevelId INT UNSIGNED, IN muscleGroupId INT UNSIGNED)
+BEGIN
+    SELECT DISTINCT
+        w.id,
+        w.name,
+        w.description,
+        w.duration,
+        w.difficulty_level_id,
+        w.created_at,
+        w.created_by,
+        w.updated_at,
+        w.updated_by
+    FROM workouts w
+        JOIN workout_movements wm ON wm.workout_id = w.id
+        JOIN movements m ON wm.movement_id = m.id
+    WHERE w.duration = duration
+        AND w.difficulty_level_id = difficultyLevelId
+        AND m.muscle_group_id = muscleGroupId;
+END//
 DELIMITER ;
